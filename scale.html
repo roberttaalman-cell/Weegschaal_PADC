@@ -571,15 +571,15 @@
       if (L > R) {
         icon = '⬅️';
         verdict = 'Het individu weegt zwaarder';
-        detail = `<span>Links: ${L}</span> &nbsp;·&nbsp; <span>Right: ${R}</span><br>Deze kant is <span>${L - R}</span> eenheden zwaarder.`;
+        detail = `<span>Links: ${L}</span> &nbsp;·&nbsp; <span>Rechts: ${R}</span><br>Deze kant is <span>${L - R}</span> eenheden zwaarder.`;
       } else if (R > L) {
         icon = '➡️';
         verdict = 'De groep weegt zwaarder';
-        detail = `<span>Links: ${L}</span> &nbsp;·&nbsp; <span>Right: ${R}</span><br>Deze kant is <span>${R - L}</span> eenheden zwaarder.`;
+        detail = `<span>Links: ${L}</span> &nbsp;·&nbsp; <span>Rechts: ${R}</span><br>Deze kant is <span>${R - L}</span> eenheden zwaarder.`;
       } else {
         icon = '⚖️';
         verdict = 'Perfect in balans';
-        detail = `<span>Links: ${L}</span> &nbsp;·&nbsp; <span>Right: ${R}</span><br>Beide kanten wegen even zwaar.`;
+        detail = `<span>Links: ${L}</span> &nbsp;·&nbsp; <span>Rechts: ${R}</span><br>Beide kanten wegen even zwaar.`;
       }
 
       document.getElementById('modalIcon').textContent    = icon;
