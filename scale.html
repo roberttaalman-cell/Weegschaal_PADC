@@ -297,8 +297,8 @@
 </head>
 <body>
 
-  <h1>The Scale of Arguments</h1>
-  <p class="subtitle">Weigh your reasoning</p>
+  <h1>De weegschaal</h1>
+  <p class="subtitle">Het eindproduct voor PAD C</p>
 
   <!-- SCALE SVG -->
   <div class="scale-wrap">
@@ -323,7 +323,7 @@
 
     <!-- LEFT -->
     <div class="column col-left">
-      <div class="column-title"><span class="dot"></span> Left Side</div>
+      <div class="column-title"><span class="dot"></span> Individu</div>
       <div id="left-fields">
         <div class="field"><label>Argument 1</label><input type="number" class="left-input" value="0" step="1"/></div>
         <div class="field"><label>Argument 2</label><input type="number" class="left-input" value="0" step="1"/></div>
@@ -336,13 +336,13 @@
           <input type="number" id="left-weight" placeholder="0" step="1" value="0"/>
         </div>
         <div class="error-msg" id="left-error"></div>
-        <button class="add-btn" onclick="addArgument('left')">+ Add argument</button>
+        <button class="add-btn" onclick="addArgument('left')">+ Voeg argument toe</button>
       </div>
     </div>
 
     <!-- RIGHT -->
     <div class="column col-right">
-      <div class="column-title"><span class="dot"></span> Right Side</div>
+      <div class="column-title"><span class="dot"></span> Groep</div>
       <div id="right-fields">
         <div class="field"><label>Argument 1</label><input type="number" class="right-input" value="0" step="1"/></div>
         <div class="field"><label>Argument 2</label><input type="number" class="right-input" value="0" step="1"/></div>
@@ -355,13 +355,13 @@
           <input type="number" id="right-weight" placeholder="0" step="1" value="0"/>
         </div>
         <div class="error-msg" id="right-error"></div>
-        <button class="add-btn" onclick="addArgument('right')">+ Add argument</button>
+        <button class="add-btn" onclick="addArgument('right')">+ Voeg argument toe</button>
       </div>
     </div>
 
   </div>
 
-  <button class="weigh-btn" onclick="weigh()">⚖ Weigh the Scale</button>
+  <button class="weigh-btn" onclick="weigh()">Bekijk wat zwaarder weegt</button>
 
   <!-- MODAL -->
   <div class="overlay" id="overlay" onclick="closeIfBg(event)">
@@ -396,12 +396,12 @@
 
       // Validation
       if (!name) {
-        errorEl.textContent = 'Please enter an argument name.';
+        errorEl.textContent = 'Voeg een naam toe voor het argument.';
         nameEl.focus();
         return;
       }
       if (isNaN(weight)) {
-        errorEl.textContent = 'Weight must be a valid integer.';
+        errorEl.textContent = 'Het gewicht moet een geheel getal zijn.';
         weightEl.focus();
         return;
       }
@@ -507,16 +507,16 @@
       let icon, verdict, detail;
       if (L > R) {
         icon = '⬅️';
-        verdict = 'Left side is heavier';
-        detail = `<span>Left: ${L}</span> &nbsp;·&nbsp; <span>Right: ${R}</span><br>Difference of <span>${L - R}</span> in favour of the left.`;
+        verdict = 'Het individu weegt zwaarder';
+        detail = `<span>Left: ${L}</span> &nbsp;·&nbsp; <span>Right: ${R}</span><br>Deze kant is <span>${L - R}</span> eenheden zwaarder.`;
       } else if (R > L) {
         icon = '➡️';
-        verdict = 'Right side is heavier';
-        detail = `<span>Left: ${L}</span> &nbsp;·&nbsp; <span>Right: ${R}</span><br>Difference of <span>${R - L}</span> in favour of the right.`;
+        verdict = 'De groep weegt zwaarder';
+        detail = `<span>Left: ${L}</span> &nbsp;·&nbsp; <span>Right: ${R}</span><br>Deze kant is <span>${R - L}</span> eenheden zwaarder.`;
       } else {
         icon = '⚖️';
-        verdict = 'Perfectly balanced';
-        detail = `<span>Left: ${L}</span> &nbsp;·&nbsp; <span>Right: ${R}</span><br>Both sides weigh exactly the same.`;
+        verdict = 'Perfectl in balans';
+        detail = `<span>Left: ${L}</span> &nbsp;·&nbsp; <span>Right: ${R}</span><br>Beide kanten wegen even zwaar.`;
       }
 
       document.getElementById('modalIcon').textContent    = icon;
