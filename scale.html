@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>The Scale of Arguments</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #f5f0e8;
+      --ink: #1a1209;
+      --gold: #b8860b;
+      --gold-light: #e8c84a;
+      --left: #2d5016;
+      --right: #5a1a1a;
+      --panel: #fffdf6;
+      --border: #c8b98a;
+      --shadow: rgba(90,60,10,0.15);
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--ink);
+      font-family: 'DM Mono', monospace;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 20px 60px;
+    }
+
+    h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.6rem, 4vw, 2.6rem);
+      letter-spacing: 0.02em;
+      margin-bottom: 6px;
+      color: var(--ink);
+    }
+
+    .subtitle {
+      font-size: 0.75rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 36px;
+    }
+
+    .scale-wrap {
+      width: 100%;
+      max-width: 520px;
+      margin-bottom: 40px;
+    }
+    .scale-wrap svg { width: 100%; height: auto; display: block; }
+
+    .columns {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      width: 100%;
+      max-width: 700px;
+      margin-bottom: 32px;
+    }
+
+    .column {
+      background: var(--panel);
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      padding: 24px 20px 20px;
+      box-shadow: 0 4px 18px var(--shadow);
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .column-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1rem;
+      margin-bottom: 18px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .column-title .dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+    .col-left .column-title .dot  { background: var(--left); }
+    .col-right .column-title .dot { background: var(--right); }
+    .col-left .column-title  { color: var(--left); }
+    .col-right .column-title { color: var(--right); }
+
+    /* argument rows */
+    .field {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .field label {
+      font-size: 0.78rem;
+      letter-spacing: 0.06em;
+      color: #5a4a2a;
+      flex: 1;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .field input[type="number"] {
+      width: 64px;
+      padding: 6px 8px;
+      border: 1.5px solid var(--border);
+      border-radius: 6px;
+      background: var(--bg);
+      font-family: 'DM Mono', monospace;
+      font-size: 0.9rem;
+      color: var(--ink);
+      text-align: center;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      -moz-appearance: textfield;
+      flex-shrink: 0;
+    }
+    .field input[type="number"]::-webkit-outer-spin-button,
+    .field input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; }
+    .field input[type="number"]:focus {
+      outline: none;
+      border-color: var(--gold);
+      box-shadow: 0 0 0 3px rgba(184,134,11,0.15);
+    }
+
+    /* remove button on custom rows */
+    .field .remove-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: #bba;
+      font-size: 0.95rem;
+      padding: 2px 4px;
+      line-height: 1;
+      flex-shrink: 0;
+      transition: color 0.15s;
+    }
+    .field .remove-btn:hover { color: #a03030; }
+
+    /* ── ADD ARGUMENT AREA ─── */
+    .add-area {
+      margin-top: 8px;
+      border-top: 1px dashed var(--border);
+      padding-top: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .add-area-row {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .add-area input[type="text"] {
+      flex: 1;
+      min-width: 0;
+      padding: 7px 10px;
+      border: 1.5px solid var(--border);
+      border-radius: 6px;
+      background: var(--bg);
+      font-family: 'DM Mono', monospace;
+      font-size: 0.78rem;
+      color: var(--ink);
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .add-area input[type="text"]:focus {
+      outline: none;
+      border-color: var(--gold);
+      box-shadow: 0 0 0 3px rgba(184,134,11,0.15);
+    }
+    .add-area input[type="number"] {
+      width: 64px;
+      padding: 7px 8px;
+      border: 1.5px solid var(--border);
+      border-radius: 6px;
+      background: var(--bg);
+      font-family: 'DM Mono', monospace;
+      font-size: 0.88rem;
+      color: var(--ink);
+      text-align: center;
+      -moz-appearance: textfield;
+      flex-shrink: 0;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .add-area input[type="number"]::-webkit-outer-spin-button,
+    .add-area input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; }
+    .add-area input[type="number"]:focus {
+      outline: none;
+      border-color: var(--gold);
+      box-shadow: 0 0 0 3px rgba(184,134,11,0.15);
+    }
+
+    .add-btn {
+      width: 100%;
+      padding: 8px 12px;
+      border: 1.5px dashed var(--border);
+      border-radius: 6px;
+      background: transparent;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.78rem;
+      letter-spacing: 0.08em;
+      color: var(--gold);
+      cursor: pointer;
+      transition: background 0.18s, border-color 0.18s, color 0.18s;
+    }
+    .add-btn:hover {
+      background: rgba(184,134,11,0.08);
+      border-color: var(--gold);
+      color: #8a5e00;
+    }
+
+    .error-msg {
+      font-size: 0.7rem;
+      color: #a03030;
+      letter-spacing: 0.04em;
+      min-height: 1em;
+    }
+
+    /* ── WEIGH BUTTON ─── */
+    .weigh-btn {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.05rem;
+      letter-spacing: 0.08em;
+      padding: 14px 48px;
+      background: var(--ink);
+      color: var(--bg);
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.12s;
+      box-shadow: 0 4px 14px var(--shadow);
+    }
+    .weigh-btn:hover { background: #3a2a10; transform: translateY(-1px); }
+    .weigh-btn:active { transform: translateY(1px); }
+
+    /* ── MODAL ─── */
+    .overlay {
+      position: fixed; inset: 0;
+      background: rgba(20,12,2,0.55);
+      backdrop-filter: blur(3px);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 100;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.25s;
+    }
+    .overlay.open { opacity: 1; pointer-events: all; }
+
+    .modal {
+      background: var(--panel);
+      border: 2px solid var(--border);
+      border-radius: 16px;
+      padding: 40px 44px 36px;
+      max-width: 400px;
+      width: 90%;
+      position: relative;
+      text-align: center;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+      transform: translateY(16px);
+      transition: transform 0.25s;
+    }
+    .overlay.open .modal { transform: translateY(0); }
+
+    .modal-close {
+      position: absolute; top: 14px; right: 16px;
+      background: none; border: none;
+      font-size: 1.3rem; cursor: pointer;
+      color: #aaa; line-height: 1;
+      transition: color 0.15s;
+    }
+    .modal-close:hover { color: var(--ink); }
+
+    .modal-icon    { font-size: 2.8rem; margin-bottom: 12px; }
+    .modal-verdict {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.4rem;
+      margin-bottom: 10px;
+      color: var(--ink);
+    }
+    .modal-detail {
+      font-size: 0.8rem;
+      color: #7a6a4a;
+      letter-spacing: 0.05em;
+      line-height: 1.7;
+    }
+    .modal-detail span { font-weight: 500; color: var(--ink); }
+  </style>
+</head>
+<body>
+
+  <h1>The Scale of Arguments</h1>
+  <p class="subtitle">Weigh your reasoning</p>
+
+  <!-- SCALE SVG -->
+  <div class="scale-wrap">
+    <svg id="scaleSvg" viewBox="0 0 520 200" xmlns="http://www.w3.org/2000/svg" fill="none">
+      <rect x="235" y="178" width="50" height="12" rx="4" fill="#b8860b"/>
+      <rect x="257" y="60" width="6" height="120" rx="3" fill="#8a6010"/>
+      <line id="beam" x1="80" y1="80" x2="440" y2="80" stroke="#8a6010" stroke-width="5" stroke-linecap="round"/>
+      <circle cx="260" cy="70" r="9" fill="#b8860b" stroke="#f5f0e8" stroke-width="2"/>
+      <line id="lRope" x1="100" y1="80" x2="100" y2="118" stroke="#8a6010" stroke-width="2.5"/>
+      <line id="rRope" x1="420" y1="80" x2="420" y2="118" stroke="#8a6010" stroke-width="2.5"/>
+      <ellipse id="lPan" cx="100" cy="128" rx="52" ry="10" fill="#c8a84a" stroke="#8a6010" stroke-width="2"/>
+      <rect id="lPanRect" x="48" y="118" width="104" height="10" rx="2" fill="#d4b45a"/>
+      <ellipse id="rPan" cx="420" cy="128" rx="52" ry="10" fill="#c8a84a" stroke="#8a6010" stroke-width="2"/>
+      <rect id="rPanRect" x="368" y="118" width="104" height="10" rx="2" fill="#d4b45a"/>
+      <text x="100" y="155" text-anchor="middle" font-family="'DM Mono',monospace" font-size="11" fill="#2d5016" letter-spacing="1">LEFT</text>
+      <text x="420" y="155" text-anchor="middle" font-family="'DM Mono',monospace" font-size="11" fill="#5a1a1a" letter-spacing="1">RIGHT</text>
+    </svg>
+  </div>
+
+  <!-- COLUMNS -->
+  <div class="columns">
+
+    <!-- LEFT -->
+    <div class="column col-left">
+      <div class="column-title"><span class="dot"></span> Left Side</div>
+      <div id="left-fields">
+        <div class="field"><label>Argument 1</label><input type="number" class="left-input" value="0" step="1"/></div>
+        <div class="field"><label>Argument 2</label><input type="number" class="left-input" value="0" step="1"/></div>
+        <div class="field"><label>Argument 3</label><input type="number" class="left-input" value="0" step="1"/></div>
+        <div class="field"><label>Argument 4</label><input type="number" class="left-input" value="0" step="1"/></div>
+      </div>
+      <div class="add-area">
+        <div class="add-area-row">
+          <input type="text"   id="left-name"   placeholder="Argument name…" maxlength="40"/>
+          <input type="number" id="left-weight" placeholder="0" step="1" value="0"/>
+        </div>
+        <div class="error-msg" id="left-error"></div>
+        <button class="add-btn" onclick="addArgument('left')">+ Add argument</button>
+      </div>
+    </div>
+
+    <!-- RIGHT -->
+    <div class="column col-right">
+      <div class="column-title"><span class="dot"></span> Right Side</div>
+      <div id="right-fields">
+        <div class="field"><label>Argument 1</label><input type="number" class="right-input" value="0" step="1"/></div>
+        <div class="field"><label>Argument 2</label><input type="number" class="right-input" value="0" step="1"/></div>
+        <div class="field"><label>Argument 3</label><input type="number" class="right-input" value="0" step="1"/></div>
+        <div class="field"><label>Argument 4</label><input type="number" class="right-input" value="0" step="1"/></div>
+      </div>
+      <div class="add-area">
+        <div class="add-area-row">
+          <input type="text"   id="right-name"   placeholder="Argument name…" maxlength="40"/>
+          <input type="number" id="right-weight" placeholder="0" step="1" value="0"/>
+        </div>
+        <div class="error-msg" id="right-error"></div>
+        <button class="add-btn" onclick="addArgument('right')">+ Add argument</button>
+      </div>
+    </div>
+
+  </div>
+
+  <button class="weigh-btn" onclick="weigh()">⚖ Weigh the Scale</button>
+
+  <!-- MODAL -->
+  <div class="overlay" id="overlay" onclick="closeIfBg(event)">
+    <div class="modal">
+      <button class="modal-close" onclick="closeModal()" aria-label="Close">✕</button>
+      <div class="modal-icon"    id="modalIcon"></div>
+      <div class="modal-verdict" id="modalVerdict"></div>
+      <div class="modal-detail"  id="modalDetail"></div>
+    </div>
+  </div>
+
+  <script>
+    // Enforce integers on all number inputs (including dynamically added ones)
+    function enforceInt(inp) {
+      inp.addEventListener('input', () => {
+        let v = inp.value;
+        if (v === '' || v === '-') return;
+        inp.value = Math.trunc(Number(v));
+      });
+    }
+    document.querySelectorAll('input[type="number"]').forEach(enforceInt);
+
+    function addArgument(side) {
+      const nameEl   = document.getElementById(side + '-name');
+      const weightEl = document.getElementById(side + '-weight');
+      const errorEl  = document.getElementById(side + '-error');
+      const container = document.getElementById(side + '-fields');
+
+      const name = nameEl.value.trim();
+      const raw  = weightEl.value;
+      const weight = raw === '' ? 0 : Math.trunc(Number(raw));
+
+      // Validation
+      if (!name) {
+        errorEl.textContent = 'Please enter an argument name.';
+        nameEl.focus();
+        return;
+      }
+      if (isNaN(weight)) {
+        errorEl.textContent = 'Weight must be a valid integer.';
+        weightEl.focus();
+        return;
+      }
+      errorEl.textContent = '';
+
+      // Build row
+      const row = document.createElement('div');
+      row.className = 'field';
+
+      const lbl = document.createElement('label');
+      lbl.title = name;
+      lbl.textContent = name;
+
+      const numInp = document.createElement('input');
+      numInp.type  = 'number';
+      numInp.className = side + '-input';
+      numInp.value = weight;
+      numInp.step  = '1';
+      enforceInt(numInp);
+
+      const removeBtn = document.createElement('button');
+      removeBtn.className = 'remove-btn';
+      removeBtn.textContent = '✕';
+      removeBtn.title = 'Remove';
+      removeBtn.onclick = () => row.remove();
+
+      row.appendChild(lbl);
+      row.appendChild(numInp);
+      row.appendChild(removeBtn);
+      container.appendChild(row);
+
+      // Reset inputs
+      nameEl.value   = '';
+      weightEl.value = '0';
+      nameEl.focus();
+    }
+
+    // Allow pressing Enter in the name field to trigger add
+    ['left','right'].forEach(side => {
+      document.getElementById(side + '-name').addEventListener('keydown', e => {
+        if (e.key === 'Enter') addArgument(side);
+      });
+      document.getElementById(side + '-weight').addEventListener('keydown', e => {
+        if (e.key === 'Enter') addArgument(side);
+      });
+    });
+
+    function sumClass(cls) {
+      return [...document.querySelectorAll('.' + cls)]
+        .reduce((acc, el) => acc + (parseInt(el.value) || 0), 0);
+    }
+
+    function animateScale(leftSum, rightSum) {
+      const maxTilt = 18;
+      const diff = rightSum - leftSum;
+      const tilt = Math.min(maxTilt,
+        (Math.abs(diff) / (Math.abs(leftSum) + Math.abs(rightSum) + 1)) * maxTilt * 3
+      ) * Math.sign(diff);
+
+      const cx = 260, cy = 70;
+      const rad = tilt * Math.PI / 180;
+      const beamHalf = 180;
+
+      const lx = cx - beamHalf * Math.cos(rad);
+      const ly = cy - beamHalf * Math.sin(rad);
+      const rx = cx + beamHalf * Math.cos(rad);
+      const ry = cy + beamHalf * Math.sin(rad);
+
+      const beam = document.getElementById('beam');
+      beam.setAttribute('x1', lx); beam.setAttribute('y1', ly);
+      beam.setAttribute('x2', rx); beam.setAttribute('y2', ry);
+
+      const ropeLen = 38;
+      const lPanY = ly + ropeLen + 10;
+      const rPanY = ry + ropeLen + 10;
+
+      document.getElementById('lRope').setAttribute('x1', lx);
+      document.getElementById('lRope').setAttribute('y1', ly);
+      document.getElementById('lRope').setAttribute('x2', lx);
+      document.getElementById('lRope').setAttribute('y2', lPanY - 10);
+
+      document.getElementById('rRope').setAttribute('x1', rx);
+      document.getElementById('rRope').setAttribute('y1', ry);
+      document.getElementById('rRope').setAttribute('x2', rx);
+      document.getElementById('rRope').setAttribute('y2', rPanY - 10);
+
+      document.getElementById('lPan').setAttribute('cx', lx);
+      document.getElementById('lPan').setAttribute('cy', lPanY);
+      document.getElementById('lPanRect').setAttribute('x', lx - 52);
+      document.getElementById('lPanRect').setAttribute('y', lPanY - 10);
+
+      document.getElementById('rPan').setAttribute('cx', rx);
+      document.getElementById('rPan').setAttribute('cy', rPanY);
+      document.getElementById('rPanRect').setAttribute('x', rx - 52);
+      document.getElementById('rPanRect').setAttribute('y', rPanY - 10);
+    }
+
+    function weigh() {
+      const L = sumClass('left-input');
+      const R = sumClass('right-input');
+      animateScale(L, R);
+
+      let icon, verdict, detail;
+      if (L > R) {
+        icon = '⬅️';
+        verdict = 'Left side is heavier';
+        detail = `<span>Left: ${L}</span> &nbsp;·&nbsp; <span>Right: ${R}</span><br>Difference of <span>${L - R}</span> in favour of the left.`;
+      } else if (R > L) {
+        icon = '➡️';
+        verdict = 'Right side is heavier';
+        detail = `<span>Left: ${L}</span> &nbsp;·&nbsp; <span>Right: ${R}</span><br>Difference of <span>${R - L}</span> in favour of the right.`;
+      } else {
+        icon = '⚖️';
+        verdict = 'Perfectly balanced';
+        detail = `<span>Left: ${L}</span> &nbsp;·&nbsp; <span>Right: ${R}</span><br>Both sides weigh exactly the same.`;
+      }
+
+      document.getElementById('modalIcon').textContent    = icon;
+      document.getElementById('modalVerdict').textContent = verdict;
+      document.getElementById('modalDetail').innerHTML    = detail;
+      document.getElementById('overlay').classList.add('open');
+    }
+
+    function closeModal()    { document.getElementById('overlay').classList.remove('open'); }
+    function closeIfBg(e)    { if (e.target === document.getElementById('overlay')) closeModal(); }
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+  </script>
+</body>
+</html>
