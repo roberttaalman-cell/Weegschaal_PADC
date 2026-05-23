@@ -388,15 +388,14 @@
     <div class="column col-left">
       <div class="column-title"><span class="dot"></span> Individu</div>
       <div id="left-fields">
-        <div class="field"><span class="info-hotspot"><span class="info-icon">i</span><span class="info-tooltip">Dit is omschrijving 1</span></span><label>Argument 1</label><input type="number" class="left-input" value="0" step="1"/></div>
-        <div class="field"><span class="info-hotspot"><span class="info-icon">i</span><span class="info-tooltip">Dit is omschrijving 2</span></span><label>Argument 2</label><input type="number" class="left-input" value="0" step="1"/></div>
-        <div class="field"><span class="info-hotspot"><span class="info-icon">i</span><span class="info-tooltip">Dit is omschrijving 3</span></span><label>Argument 3</label><input type="number" class="left-input" value="0" step="1"/></div>
-        <div class="field"><span class="info-hotspot"><span class="info-icon">i</span><span class="info-tooltip">Dit is omschrijving 4</span></span><label>Argument 4</label><input type="number" class="left-input" value="0" step="1"/></div>
+        <div class="field"><span class="info-hotspot"><span class="info-icon">i</span><span class="info-tooltip">Dit is omschrijving 1</span></span><label>Argument 1</label><input type="number" class="left-input" value="0" step="1" min="0"/></div>
+        <div class="field"><span class="info-hotspot"><span class="info-icon">i</span><span class="info-tooltip">Dit is omschrijving 2</span></span><label>Argument 2</label><input type="number" class="left-input" value="0" step="1" min="0"/></div>
+        <div class="field"><span class="info-hotspot"><span class="info-icon">i</span><span class="info-tooltip">Dit is omschrijving 3</span></span><label>Argument 3</label><input type="number" class="left-input" value="0" step="1" min="0"/></div>
+        <div class="field"><span class="info-hotspot"><span class="info-icon">i</span><span class="info-tooltip">Dit is omschrijving 4</span></span><label>Argument 4</label><input type="number" class="left-input" value="0" step="1" min="0"/></div>
       </div>
       <div class="add-area">
         <div class="add-area-row">
-          <input type="text"   id="left-name"   placeholder="Nieuw argument" maxlength="40"/>
-          <input type="number" id="left-weight" placeholder="0" step="1" value="0"/>
+          <input type="text" id="left-name" placeholder="Nieuw argument" maxlength="40"/>
         </div>
         <div class="error-msg" id="left-error"></div>
         <button class="add-btn" onclick="addArgument('left')">+ Voeg argument toe</button>
@@ -407,15 +406,14 @@
     <div class="column col-right">
       <div class="column-title"><span class="dot"></span> Groep</div>
       <div id="right-fields">
-        <div class="field"><span class="info-hotspot"><span class="info-icon">i</span><span class="info-tooltip">Dit is omschrijving 1</span></span><label>Argument 1</label><input type="number" class="right-input" value="0" step="1"/></div>
-        <div class="field"><span class="info-hotspot"><span class="info-icon">i</span><span class="info-tooltip">Dit is omschrijving 2</span></span><label>Argument 2</label><input type="number" class="right-input" value="0" step="1"/></div>
-        <div class="field"><span class="info-hotspot"><span class="info-icon">i</span><span class="info-tooltip">Dit is omschrijving 3</span></span><label>Argument 3</label><input type="number" class="right-input" value="0" step="1"/></div>
-        <div class="field"><span class="info-hotspot"><span class="info-icon">i</span><span class="info-tooltip">Dit is omschrijving 4</span></span><label>Argument 4</label><input type="number" class="right-input" value="0" step="1"/></div>
+        <div class="field"><span class="info-hotspot"><span class="info-icon">i</span><span class="info-tooltip">Dit is omschrijving 1</span></span><label>Argument 1</label><input type="number" class="right-input" value="0" step="1" min="0"/></div>
+        <div class="field"><span class="info-hotspot"><span class="info-icon">i</span><span class="info-tooltip">Dit is omschrijving 2</span></span><label>Argument 2</label><input type="number" class="right-input" value="0" step="1" min="0"/></div>
+        <div class="field"><span class="info-hotspot"><span class="info-icon">i</span><span class="info-tooltip">Dit is omschrijving 3</span></span><label>Argument 3</label><input type="number" class="right-input" value="0" step="1" min="0"/></div>
+        <div class="field"><span class="info-hotspot"><span class="info-icon">i</span><span class="info-tooltip">Dit is omschrijving 4</span></span><label>Argument 4</label><input type="number" class="right-input" value="0" step="1" min="0"/></div>
       </div>
       <div class="add-area">
         <div class="add-area-row">
-          <input type="text"   id="right-name"   placeholder="Nieuw argument" maxlength="40"/>
-          <input type="number" id="right-weight" placeholder="0" step="1" value="0"/>
+          <input type="text" id="right-name" placeholder="Nieuw argument" maxlength="40"/>
         </div>
         <div class="error-msg" id="right-error"></div>
         <button class="add-btn" onclick="addArgument('right')">+ Voeg argument toe</button>
@@ -423,6 +421,13 @@
     </div>
 
   </div>
+
+  <div id="pool-status" style="
+    font-size:0.78rem; letter-spacing:0.05em; color:#5a4a2a;
+    background:#fffdf6; border:1.5px solid #c8b98a; border-radius:8px;
+    padding:10px 20px; margin-bottom:20px; max-width:700px; width:100%;
+    text-align:center; line-height:1.8;
+  "></div>
 
   <button class="weigh-btn" onclick="weigh()">Bekijk wat zwaarder weegt</button>
 
@@ -437,40 +442,98 @@
   </div>
 
   <script>
-    // Enforce integers on all number inputs (including dynamically added ones)
+    // ── WEIGHT POOL SYSTEM ──────────────────────────────────────────────
+    // Total weight = number of arguments (left + right).
+    // If that total is even, add 1 → always odd → tie is impossible.
+    // Each argument gets a minimum of 0; user distributes the pool freely.
+    // A live "remaining" counter shows how many points are left to assign.
+
+    function countArgs() {
+      const l = document.querySelectorAll('.left-input').length;
+      const r = document.querySelectorAll('.right-input').length;
+      return { l, r, total: l + r };
+    }
+
+    function poolSize() {
+      const { total } = countArgs();
+      if (total === 0) return 0;
+      // At least 2× the number of arguments, and always odd to prevent ties
+      const base = total * 4;
+      return base % 4 === 0 ? base + 1 : base;
+    }
+
+    function sumClass(cls) {
+      return [...document.querySelectorAll('.' + cls)]
+        .reduce((acc, el) => acc + (parseInt(el.value) || 0), 0);
+    }
+
+    function remaining() {
+      const pool = poolSize();
+      const used = sumClass('left-input') + sumClass('right-input');
+      return pool - used;
+    }
+
+    function updatePoolUI() {
+      const pool = poolSize();
+      const rem  = remaining();
+      const el   = document.getElementById('pool-status');
+      if (!el) return;
+      if (pool === 0) {
+        el.textContent = '';
+        return;
+      }
+      const usedL = sumClass('left-input');
+      const usedR = sumClass('right-input');
+      el.innerHTML =
+        `Totaal te verdelen: <strong>${pool}</strong> &nbsp;·&nbsp; ` +
+        `Resterend: <strong style="color:${rem < 0 ? '#a03030' : rem === 0 ? '#2d5016' : 'inherit'}">${rem}</strong>`;
+    }
+
+    // Enforce non-negative integers; clamp so sum can't exceed pool
     function enforceInt(inp) {
       inp.addEventListener('input', () => {
         let v = inp.value;
-        if (v === '' || v === '-') return;
-        inp.value = Math.trunc(Number(v));
+        if (v === '' || v === '-') { inp.value = 0; updatePoolUI(); return; }
+        let n = Math.max(0, Math.trunc(Number(v)));
+        // check if over budget
+        const otherSum = (sumClass('left-input') + sumClass('right-input')) - (parseInt(inp.value) || 0);
+        const pool = poolSize();
+        if (otherSum + n > pool) n = pool - otherSum;
+        inp.value = n;
+        updatePoolUI();
       });
     }
     document.querySelectorAll('input[type="number"]').forEach(enforceInt);
 
+    // When arguments are added/removed, recalculate the pool.
+    // We keep existing values, but cap them if necessary.
+    function rebalanceAfterChange() {
+      const pool = poolSize();
+      // Clamp all inputs so their sum doesn't exceed new pool
+      const allInputs = [...document.querySelectorAll('.left-input, .right-input')];
+      let running = 0;
+      allInputs.forEach(inp => {
+        let v = Math.max(0, parseInt(inp.value) || 0);
+        v = Math.min(v, pool - running);
+        inp.value = v;
+        running += v;
+      });
+      updatePoolUI();
+    }
+
     function addArgument(side) {
-      const nameEl   = document.getElementById(side + '-name');
-      const weightEl = document.getElementById(side + '-weight');
-      const errorEl  = document.getElementById(side + '-error');
+      const nameEl    = document.getElementById(side + '-name');
+      const errorEl   = document.getElementById(side + '-error');
       const container = document.getElementById(side + '-fields');
 
       const name = nameEl.value.trim();
-      const raw  = weightEl.value;
-      const weight = raw === '' ? 0 : Math.trunc(Number(raw));
-
-      // Validation
       if (!name) {
         errorEl.textContent = 'Voeg een naam toe voor het argument.';
         nameEl.focus();
         return;
       }
-      if (isNaN(weight)) {
-        errorEl.textContent = 'Het gewicht moet een geheel getal zijn.';
-        weightEl.focus();
-        return;
-      }
       errorEl.textContent = '';
 
-      // Build row
       const row = document.createElement('div');
       row.className = 'field';
 
@@ -479,44 +542,37 @@
       lbl.textContent = name;
 
       const numInp = document.createElement('input');
-      numInp.type  = 'number';
+      numInp.type      = 'number';
       numInp.className = side + '-input';
-      numInp.value = weight;
-      numInp.step  = '1';
+      numInp.value     = 0;
+      numInp.step      = '1';
+      numInp.min       = '0';
       enforceInt(numInp);
 
       const removeBtn = document.createElement('button');
-      removeBtn.className = 'remove-btn';
+      removeBtn.className   = 'remove-btn';
       removeBtn.textContent = '✕';
-      removeBtn.title = 'Remove';
-      removeBtn.onclick = () => row.remove();
+      removeBtn.title       = 'Verwijder';
+      removeBtn.onclick = () => { row.remove(); rebalanceAfterChange(); };
 
       row.appendChild(lbl);
       row.appendChild(numInp);
       row.appendChild(removeBtn);
       container.appendChild(row);
 
-      // Reset inputs
-      nameEl.value   = '';
-      weightEl.value = '0';
+      nameEl.value = '';
       nameEl.focus();
+      rebalanceAfterChange();
     }
 
-    // Allow pressing Enter in the name field to trigger add
+    // Enter key in name field
     ['left','right'].forEach(side => {
       document.getElementById(side + '-name').addEventListener('keydown', e => {
         if (e.key === 'Enter') addArgument(side);
       });
-      document.getElementById(side + '-weight').addEventListener('keydown', e => {
-        if (e.key === 'Enter') addArgument(side);
-      });
     });
 
-    function sumClass(cls) {
-      return [...document.querySelectorAll('.' + cls)]
-        .reduce((acc, el) => acc + (parseInt(el.value) || 0), 0);
-    }
-
+    // ── SCALE ANIMATION ─────────────────────────────────────────────────
     function animateScale(leftSum, rightSum) {
       const maxTilt = 18;
       const diff = rightSum - leftSum;
@@ -533,9 +589,10 @@
       const rx = cx + beamHalf * Math.cos(rad);
       const ry = cy + beamHalf * Math.sin(rad);
 
-      const beam = document.getElementById('beam');
-      beam.setAttribute('x1', lx); beam.setAttribute('y1', ly);
-      beam.setAttribute('x2', rx); beam.setAttribute('y2', ry);
+      document.getElementById('beam').setAttribute('x1', lx);
+      document.getElementById('beam').setAttribute('y1', ly);
+      document.getElementById('beam').setAttribute('x2', rx);
+      document.getElementById('beam').setAttribute('y2', ry);
 
       const ropeLen = 38;
       const lPanY = ly + ropeLen + 10;
@@ -562,24 +619,45 @@
       document.getElementById('rPanRect').setAttribute('y', rPanY - 10);
     }
 
+    // ── WEIGH ────────────────────────────────────────────────────────────
     function weigh() {
+      const pool = poolSize();
+
+      // Empty state: nothing filled in — allow balance
+      if (pool === 0) {
+        animateScale(0, 0);
+        document.getElementById('modalIcon').textContent    = '⚖️';
+        document.getElementById('modalVerdict').textContent = 'Nog geen argumenten';
+        document.getElementById('modalDetail').innerHTML    = 'Voeg argumenten toe en verdeel de punten.';
+        document.getElementById('overlay').classList.add('open');
+        return;
+      }
+
+      const used = sumClass('left-input') + sumClass('right-input');
+      if (used !== pool) {
+        const rem = pool - used;
+        document.getElementById('modalIcon').textContent    = '⚠️';
+        document.getElementById('modalVerdict').textContent = 'Verdeel alle punten';
+        document.getElementById('modalDetail').innerHTML    =
+          `Je hebt nog <strong>${rem}</strong> punt${rem === 1 ? '' : 'en'} te verdelen.<br>` +
+          `Totaal beschikbaar: <strong>${pool}</strong> &nbsp;·&nbsp; Toegewezen: <strong>${used}</strong>`;
+        document.getElementById('overlay').classList.add('open');
+        return;
+      }
+
       const L = sumClass('left-input');
       const R = sumClass('right-input');
       animateScale(L, R);
 
       let icon, verdict, detail;
       if (L > R) {
-        icon = '⬅️';
+        icon    = '⬅️';
         verdict = 'Het individu weegt zwaarder';
-        detail = `<span>Links: ${L}</span> &nbsp;·&nbsp; <span>Rechts: ${R}</span><br>Deze kant is <span>${L - R}</span> eenheden zwaarder.`;
-      } else if (R > L) {
-        icon = '➡️';
-        verdict = 'De groep weegt zwaarder';
-        detail = `<span>Links: ${L}</span> &nbsp;·&nbsp; <span>Rechts: ${R}</span><br>Deze kant is <span>${R - L}</span> eenheden zwaarder.`;
+        detail  = `<span>Individu: ${L}</span> &nbsp;·&nbsp; <span>Groep: ${R}</span><br>Deze kant is <span>${L - R}</span> eenhe${L - R === 1 ? 'id' : 'den'} zwaarder.`;
       } else {
-        icon = '⚖️';
-        verdict = 'Perfect in balans';
-        detail = `<span>Links: ${L}</span> &nbsp;·&nbsp; <span>Rechts: ${R}</span><br>Beide kanten wegen even zwaar.`;
+        icon    = '➡️';
+        verdict = 'De groep weegt zwaarder';
+        detail  = `<span>Individu: ${L}</span> &nbsp;·&nbsp; <span>Groep: ${R}</span><br>Deze kant is <span>${R - L}</span> eenhe${R - L === 1 ? 'id' : 'den'} zwaarder.`;
       }
 
       document.getElementById('modalIcon').textContent    = icon;
@@ -588,9 +666,12 @@
       document.getElementById('overlay').classList.add('open');
     }
 
-    function closeModal()    { document.getElementById('overlay').classList.remove('open'); }
-    function closeIfBg(e)    { if (e.target === document.getElementById('overlay')) closeModal(); }
+    function closeModal()  { document.getElementById('overlay').classList.remove('open'); }
+    function closeIfBg(e)  { if (e.target === document.getElementById('overlay')) closeModal(); }
     document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+    // Init pool display
+    updatePoolUI();
   </script>
 </body>
 </html>
