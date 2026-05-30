@@ -95,7 +95,7 @@
     /* argument rows */
     .field {
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       gap: 8px;
       margin-bottom: 12px;
     }
@@ -105,9 +105,9 @@
       color: #5a4a2a;
       flex: 1;
       min-width: 0;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
+      white-space: normal;
+      word-break: break-word;
+      line-height: 1.4;
     }
     .field input[type="number"] {
       width: 64px;
@@ -122,6 +122,7 @@
       transition: border-color 0.2s, box-shadow 0.2s;
       -moz-appearance: textfield;
       flex-shrink: 0;
+      margin-top: 1px;
     }
     .field input[type="number"]::-webkit-outer-spin-button,
     .field input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; }
@@ -178,8 +179,8 @@
       opacity: 0;
       pointer-events: none;
       position: absolute;
-      right: 20px;
-      left: auto;
+      right: 24px;
+      left: -330px;
       top: 50%;
       transform: translateY(-50%);
       background: #2a1e0a;
@@ -189,7 +190,8 @@
       line-height: 1.45;
       padding: 7px 11px;
       border-radius: 7px;
-      white-space: nowrap;
+      white-space: normal;
+      max-width: 360px;
       box-shadow: 0 4px 16px rgba(90,60,10,0.28);
       z-index: 100;
       transition: opacity 0.18s;
@@ -356,12 +358,119 @@
       line-height: 1.7;
     }
     .modal-detail span { font-weight: 500; color: var(--ink); }
+
+    /* ── PAGE HEADER ─── */
+    .page-header {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 24px;
+      width: 100%;
+      max-width: 700px;
+      margin-bottom: 36px;
+    }
+    .header-left {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .header-left h1 { margin-bottom: 6px; }
+    .header-left .subtitle { margin-bottom: 0; }
+
+    /* ── HELP BUTTON ─── */
+    .help-btn {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.75rem;
+      letter-spacing: 0.07em;
+      line-height: 1.5;
+      padding: 10px 16px;
+      background: var(--ink);
+      color: var(--bg);
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      box-shadow: 0 3px 12px var(--shadow);
+      transition: background 0.18s, transform 0.12s;
+      flex-shrink: 0;
+      text-align: center;
+    }
+    .help-btn:hover {
+      background: #3a2a10;
+      transform: translateY(-1px);
+    }
+
+    /* ── STEPS MODAL ─── */
+    .steps-list {
+      text-align: left;
+      margin-top: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .step-item {
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+    }
+    .step-num {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--gold);
+      flex-shrink: 0;
+      width: 24px;
+      margin-top: 1px;
+    }
+    .step-text {
+      font-size: 0.78rem;
+      color: #5a4a2a;
+      line-height: 1.65;
+      letter-spacing: 0.03em;
+    }
+    .modal.modal-wide {
+      max-width: 520px;
+    }
   </style>
 </head>
 <body>
 
-  <h1>De weegschaal</h1>
-  <p class="subtitle">Het eindproduct voor PAD C</p>
+
+  <!-- STEPS MODAL -->
+  <div class="overlay" id="help-overlay" onclick="closeHelpIfBg(event)">
+    <div class="modal modal-wide">
+      <button class="modal-close" onclick="closeHelp()" aria-label="Close">&#x2715;</button>
+      <div class="modal-icon">&#x1F4D6;</div>
+      <div class="modal-verdict">Hoe gebruik je de weegschaal</div>
+      <div class="modal-detail">
+        <div class="steps-list">
+          <div class="step-item">
+            <span class="step-num">1</span>
+            <span class="step-text">Je ziet verschillende factoren die een rol kunnen spelen in de keuze die je moet maken tussen een individuele behoefte en het belang voor de groep. Deze komen voort uit de wetenschappelijke literatuur en praktijkervaringen van de bouwers.</span>
+          </div>
+          <div class="step-item">
+            <span class="step-num">2</span>
+            <span class="step-text">Je gaat na of deze factoren ook bij jouw dilemma een rol spelen. Zo ja, dan vul je een waarde in (je geeft een hoge waarde voor een factor die een grote rol speelt en een lage waarde voor een factor die een kleine rol speelt). Zo nee, dan vul je geen waarde in. Ook kan je je muis over een `info-button' slepen om meer informatie over de factoren te lezen. Dit biedt een mogelijkheid om tot nieuwe inzichten te komen gerelateerd aan jouw specifieke dilemma.</span>
+          </div>
+          <div class="step-item">
+            <span class="step-num">3</span>
+            <span class="step-text">Je vindt ook open velden. Deze kan je gebruiken voor factoren die nog niet standaard benoemd zijn, maar wel van toepassing zijn op jouw specifieke praktijksituatie. Wanneer je de open velden invult, geef je ook deze factoren een waarde.</span>
+          </div>
+          <div class="step-item">
+            <span class="step-num">4</span>
+            <span class="step-text">Wanneer je het complete beeld van de factoren hebt ingevoerd in de tool, klik je op de knop: "Bekijk wat zwaarder weegt!". De weegschaal brengt visueel in kaart wat jij belangrijk vindt en hoe dit een bepaald handelingsperspectief op wijst.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-header">
+    <div class="header-left">
+      <h1>De weegschaal</h1>
+      <p class="subtitle">Het eindproduct voor PAD C</p>
+    </div>
+    <button class="help-btn" onclick="openHelp()">? Hoe gebruik je<br>de weegschaal</button>
+  </div>
 
   <!-- SCALE SVG -->
   <div class="scale-wrap">
@@ -388,15 +497,15 @@
     <div class="column col-left">
       <div class="column-title"><span class="dot"></span> Individu</div>
       <div id="left-fields">
-        <div class="field"><span class="info-hotspot"><span class="info-icon">i</span><span class="info-tooltip">Dit is omschrijving 1</span></span><label>Leerbaarheid</label><input type="number" class="left-input" value="0" step="1" min="0"/></div>
-        <div class="field"><span class="info-hotspot"><span class="info-icon">i</span><span class="info-tooltip">Dit is omschrijving 2</span></span><label>Zorglegitimering en welzijn</label><input type="number" class="left-input" value="0" step="1" min="0"/></div>
-        <div class="field"><span class="info-hotspot"><span class="info-icon">i</span><span class="info-tooltip">Dit is omschrijving 3</span></span><label>Rechtvaardigheid en gelijke behandeling</label><input type="number" class="left-input" value="0" step="1" min="0"/></div>
-        <div class="field"><span class="info-hotspot"><span class="info-icon">i</span><span class="info-tooltip">Dit is omschrijving 4</span></span><label>Socialisatie en de groepsnormen</label><input type="number" class="left-input" value="0" step="1" min="0"/></div>
-        <div class="field"><span class="info-hotspot"><span class="info-icon">i</span><span class="info-tooltip">Dit is omschrijving 5</span></span><label>Leren als sociaal proces</label><input type="number" class="left-input" value="0" step="1" min="0"/></div>
-        <div class="field"><span class="info-hotspot"><span class="info-icon">i</span><span class="info-tooltip">Dit is omschrijving 6</span></span><label>Pedagogische relatie</label><input type="number" class="left-input" value="0" step="1" min="0"/></div>
-        <div class="field"><span class="info-hotspot"><span class="info-icon">i</span><span class="info-tooltip">Dit is omschrijving 7</span></span><label>Intrinsieke motivatie (cognitief zelfvertrouwen en autonomie)</label><input type="number" class="left-input" value="0" step="1" min="0"/></div>
-        <div class="field"><span class="info-hotspot"><span class="info-icon">i</span><span class="info-tooltip">Dit is omschrijving 8</span></span><label>Context van het individu</label><input type="number" class="left-input" value="0" step="1" min="0"/></div>
-        <div class="field"><span class="info-hotspot"><span class="info-icon">i</span><span class="info-tooltip">Dit is omschrijving 9</span></span><label>Context van de school (meso-omgeving)</label><input type="number" class="left-input" value="0" step="1" min="0"/></div>
+        <div class="field"><span class="info-hotspot"><span class="info-icon">i</span><span class="info-tooltip">Effectieve lestijd en structuur zijn belangrijk voor de groep, maar individuele leerlingen hebben soms andere randvoorwaarden nodig om te kunnen leren. Gaat het om verloren lestijd voor de groep, of om een aanpassing die één leerling helpt zonder de rest te benadelen?</span></span><label>Leerbaarheid</label><input type="number" class="left-input" value="0" step="1" min="0"/></div>
+        <div class="field"><span class="info-hotspot"><span class="info-icon">i</span><span class="info-tooltip">Storend gedrag is vaak een noodsignaal. Welzijn kan acuut zijn (rouw, stress) of structureel (chaotische thuissituatie). Wiens welzijn staat het meest onder druk, en vraagt dat om een tijdelijke uitzondering?</span></span><label>Zorglegitimering en welzijn</label><input type="number" class="left-input" value="0" step="1" min="0"/></div>
+        <div class="field"><span class="info-hotspot"><span class="info-icon">i</span><span class="info-tooltip">Elke uitzondering is zichtbaar voor de klas en schept een precedent. Maar gelijke behandeling betekent niet identieke behandeling. soms vraagt gelijkwaardigheid juist om een andere aanpak voor één leerling.</span></span><label>Rechtvaardigheid en gelijke behandeling</label><input type="number" class="left-input" value="0" step="1" min="0"/></div>
+        <div class="field"><span class="info-hotspot"><span class="info-icon">i</span><span class="info-tooltip">School bereidt leerlingen voor op de maatschappij (socialisatie). Leren omgaan met regels, deadlines en groepsnormen is noodzakelijk oefenmateriaal voor later. Aanpassingen mogen er nooit toe leiden dat een leerling buiten de groep komt te staan. Er moet echter ook ruimte zijn voor het vormen van een zelfstandig, vrij individu.</span></span><label>Socialisatie en de groepsnormen</label><input type="number" class="left-input" value="0" step="1" min="0"/></div>
+        <div class="field"><span class="info-hotspot"><span class="info-icon">i</span><span class="info-tooltip">Leren doe je samen. Door interactie, samenwerking en het horen van vragen van klasgenoten geven leerlingen betekenis aan kennis. De sociale omgeving kan voor een specifieke leerling soms zóveel prikkels overlast veroorzaken, dat het sociale aspect het leren juist blokkeert in plaats van stimuleert.</span></span><label>Leren als sociaal proces</label><input type="number" class="left-input" value="0" step="1" min="0"/></div>
+        <div class="field"><span class="info-hotspot"><span class="info-icon">i</span><span class="info-tooltip">De docent is de 'morele gastheer' die de waardigheid en kwetsbaarheid van de leerling erkent. Het simpelweg onderdrukken van onrust leidt vaak tot escalatie. Meebewegen en proactief handelen versterkt de vertrouwensband. De rest van de klas kijkt mee. Hoe jij met één leerling omgaat, bepaalt hoe de hele groep denkt over de rechtvaardigheid en veiligheid in jouw les.</span></span><label>Pedagogische relatie</label><input type="number" class="left-input" value="0" step="1" min="0"/></div>
+        <div class="field"><span class="info-hotspot"><span class="info-icon">i</span><span class="info-tooltip">Leerlingen zijn gemotiveerd als voldaan wordt aan de basisbehoeften: relatie, competentie en autonomie. Ruimte en autonomie geven aan een leerling vergroot het zelfvertrouwen en de zelfregulatie, ook al brengt die vrijheid risico's met zich mee.</span></span><label>Intrinsieke motivatie (cognitief zelfvertrouwen en autonomie)</label><input type="number" class="left-input" value="0" step="1" min="0"/></div>
+        <div class="field"><span class="info-hotspot"><span class="info-icon">i</span><span class="info-tooltip">Gedrag staat niet op zichzelf, maar wordt beïnvloed door de thuisomgeving, vrienden en cultuur (microsysteem). Schijnbaar hetzelfde gedrag (zoals te laat komen of brutaliteit) kan bij de ene leerling door desinteresse komen en bij de ander door een crisissituatie thuis. Dit vraagt om een verschillende aanpak. Soms is deze context niet uniek voor één leerling, maar deelt een hele klas dezelfde achtergrondfactoren (groepsbreed).</span></span><label>Context van het individu</label><input type="number" class="left-input" value="0" step="1" min="0"/></div>
+        <div class="field"><span class="info-hotspot"><span class="info-icon">i</span><span class="info-tooltip">Een school is een gemeenschap waarin regels pas werken als het hele team er eenduidig in staat. Regels moeten echter niet blind en instrumenteel worden toegepast. Bovendien biedt schoolbeleid vaak bewust ruimte voor maatwerk, mits dit binnen het team wordt afgestemd.</span></span><label>Context van de school (meso-omgeving)</label><input type="number" class="left-input" value="0" step="1" min="0"/></div>
       </div>
       <div class="add-area">
         <div class="add-area-row">
@@ -411,15 +520,15 @@
     <div class="column col-right">
       <div class="column-title"><span class="dot"></span> Groep</div>
       <div id="right-fields">
-        <div class="field"><span class="info-hotspot"><span class="info-icon">i</span><span class="info-tooltip">Dit is omschrijving 1</span></span><label>Leerbaarheid</label><input type="number" class="right-input" value="0" step="1" min="0"/></div>
-        <div class="field"><span class="info-hotspot"><span class="info-icon">i</span><span class="info-tooltip">Dit is omschrijving 2</span></span><label>Zorglegitimering en welzijn</label><input type="number" class="right-input" value="0" step="1" min="0"/></div>
-        <div class="field"><span class="info-hotspot"><span class="info-icon">i</span><span class="info-tooltip">Dit is omschrijving 3</span></span><label>Rechtvaardigheid en gelijke behandeling</label><input type="number" class="right-input" value="0" step="1" min="0"/></div>
-        <div class="field"><span class="info-hotspot"><span class="info-icon">i</span><span class="info-tooltip">Dit is omschrijving 4</span></span><label>Socialisatie en de groepsnormen</label><input type="number" class="right-input" value="0" step="1" min="0"/></div>
-        <div class="field"><span class="info-hotspot"><span class="info-icon">i</span><span class="info-tooltip">Dit is omschrijving 5</span></span><label>Leren als sociaal proces</label><input type="number" class="right-input" value="0" step="1" min="0"/></div>
-        <div class="field"><span class="info-hotspot"><span class="info-icon">i</span><span class="info-tooltip">Dit is omschrijving 6</span></span><label>Pedagogische relatie</label><input type="number" class="right-input" value="0" step="1" min="0"/></div>
-        <div class="field"><span class="info-hotspot"><span class="info-icon">i</span><span class="info-tooltip">Dit is omschrijving 7</span></span><label>Intrinsieke motivatie (cognitief zelfvertrouwen en autonomie)</label><input type="number" class="right-input" value="0" step="1" min="0"/></div>
-        <div class="field"><span class="info-hotspot"><span class="info-icon">i</span><span class="info-tooltip">Dit is omschrijving 8</span></span><label>Context van het individu</label><input type="number" class="right-input" value="0" step="1" min="0"/></div>
-        <div class="field"><span class="info-hotspot"><span class="info-icon">i</span><span class="info-tooltip">Dit is omschrijving 9</span></span><label>Context van de school (meso-omgeving)</label><input type="number" class="right-input" value="0" step="1" min="0"/></div>
+        <div class="field"><span class="info-hotspot"><span class="info-icon">i</span><span class="info-tooltip">Effectieve lestijd en structuur zijn belangrijk voor de groep, maar individuele leerlingen hebben soms andere randvoorwaarden nodig om te kunnen leren. Gaat het om verloren lestijd voor de groep, of om een aanpassing die één leerling helpt zonder de rest te benadelen?</span></span><label>Leerbaarheid</label><input type="number" class="right-input" value="0" step="1" min="0"/></div>
+        <div class="field"><span class="info-hotspot"><span class="info-icon">i</span><span class="info-tooltip">Storend gedrag is vaak een noodsignaal. Welzijn kan acuut zijn (rouw, stress) of structureel (chaotische thuissituatie). Wiens welzijn staat het meest onder druk, en vraagt dat om een tijdelijke uitzondering?</span></span><label>Zorglegitimering en welzijn</label><input type="number" class="right-input" value="0" step="1" min="0"/></div>
+        <div class="field"><span class="info-hotspot"><span class="info-icon">i</span><span class="info-tooltip">Elke uitzondering is zichtbaar voor de klas en schept een precedent. Maar gelijke behandeling betekent niet identieke behandeling. soms vraagt gelijkwaardigheid juist om een andere aanpak voor één leerling.</span></span><label>Rechtvaardigheid en gelijke behandeling</label><input type="number" class="right-input" value="0" step="1" min="0"/></div>
+        <div class="field"><span class="info-hotspot"><span class="info-icon">i</span><span class="info-tooltip">School bereidt leerlingen voor op de maatschappij (socialisatie). Leren omgaan met regels, deadlines en groepsnormen is noodzakelijk oefenmateriaal voor later. Aanpassingen mogen er nooit toe leiden dat een leerling buiten de groep komt te staan. Er moet echter ook ruimte zijn voor het vormen van een zelfstandig, vrij individu.</span></span><label>Socialisatie en de groepsnormen</label><input type="number" class="right-input" value="0" step="1" min="0"/></div>
+        <div class="field"><span class="info-hotspot"><span class="info-icon">i</span><span class="info-tooltip">Leren doe je samen. Door interactie, samenwerking en het horen van vragen van klasgenoten geven leerlingen betekenis aan kennis. De sociale omgeving kan voor een specifieke leerling soms zóveel prikkels overlast veroorzaken, dat het sociale aspect het leren juist blokkeert in plaats van stimuleert.</span></span><label>Leren als sociaal proces</label><input type="number" class="right-input" value="0" step="1" min="0"/></div>
+        <div class="field"><span class="info-hotspot"><span class="info-icon">i</span><span class="info-tooltip">De docent is de 'morele gastheer' die de waardigheid en kwetsbaarheid van de leerling erkent. Het simpelweg onderdrukken van onrust leidt vaak tot escalatie. Meebewegen en proactief handelen versterkt de vertrouwensband. De rest van de klas kijkt mee. Hoe jij met één leerling omgaat, bepaalt hoe de hele groep denkt over de rechtvaardigheid en veiligheid in jouw les.</span></span><label>Pedagogische relatie</label><input type="number" class="right-input" value="0" step="1" min="0"/></div>
+        <div class="field"><span class="info-hotspot"><span class="info-icon">i</span><span class="info-tooltip">Leerlingen zijn gemotiveerd als voldaan wordt aan de basisbehoeften: relatie, competentie en autonomie. Ruimte en autonomie geven aan een leerling vergroot het zelfvertrouwen en de zelfregulatie, ook al brengt die vrijheid risico's met zich mee.</span></span><label>Intrinsieke motivatie (cognitief zelfvertrouwen en autonomie)</label><input type="number" class="right-input" value="0" step="1" min="0"/></div>
+        <div class="field"><span class="info-hotspot"><span class="info-icon">i</span><span class="info-tooltip">Gedrag staat niet op zichzelf, maar wordt beïnvloed door de thuisomgeving, vrienden en cultuur (microsysteem). Schijnbaar hetzelfde gedrag (zoals te laat komen of brutaliteit) kan bij de ene leerling door desinteresse komen en bij de ander door een crisissituatie thuis. Dit vraagt om een verschillende aanpak. Soms is deze context niet uniek voor één leerling, maar deelt een hele klas dezelfde achtergrondfactoren (groepsbreed).</span></span><label>Context van het individu</label><input type="number" class="right-input" value="0" step="1" min="0"/></div>
+        <div class="field"><span class="info-hotspot"><span class="info-icon">i</span><span class="info-tooltip">Een school is een gemeenschap waarin regels pas werken als het hele team er eenduidig in staat. Regels moeten echter niet blind en instrumenteel worden toegepast. Bovendien biedt schoolbeleid vaak bewust ruimte voor maatwerk, mits dit binnen het team wordt afgestemd.</span></span><label>Context van de school (meso-omgeving)</label><input type="number" class="right-input" value="0" step="1" min="0"/></div>
       </div>
       <div class="add-area">
         <div class="add-area-row">
@@ -660,14 +769,24 @@
       animateScale(L, R);
 
       let icon, verdict, detail;
-      if (L > R) {
+      const diff = Math.abs(L - R);
+      const threshold = pool * 0.05; // 5% of total pool
+
+      if (diff < threshold) {
+        icon    = '⚖️';
+        verdict = 'Te dicht bij elkaar';
+        detail  = `Het verschil (<strong>${diff}</strong> punt${diff === 1 ? '' : 'en'}) is te klein om een duidelijke uitspraak te doen. Pro<br><br>` +
+                  `Individu: <strong>${L}</strong> &nbsp;·&nbsp; Groep: <strong>${R}</strong>`;
+      } else if (L > R) {
         icon    = '⬅️';
         verdict = 'Het individu weegt zwaarder';
-        detail  = `<span>Individu: ${L}</span> &nbsp;·&nbsp; <span>Groep: ${R}</span><br>Deze kant is <span>${L - R}</span> eenhe${L - R === 1 ? 'id' : 'den'} zwaarder.`;
+        detail  = `Individu: <strong>${L}</strong> &nbsp;·&nbsp; Groep: <strong>${R}</strong><br><br>` +
+                  `Je hier de mogelijkheden moet verkennen om aan de behoefte tegemoet te komen.`;
       } else {
         icon    = '➡️';
         verdict = 'De groep weegt zwaarder';
-        detail  = `<span>Individu: ${L}</span> &nbsp;·&nbsp; <span>Groep: ${R}</span><br>Deze kant is <span>${R - L}</span> eenhe${R - L === 1 ? 'id' : 'den'} zwaarder.`;
+        detail  = `Individu: <strong>${L}</strong> &nbsp;·&nbsp; Groep: <strong>${R}</strong><br><br>` +
+                  `Je moet voorzichtig zijn moet met het tegemoetkomen aan het individuele belang. De groep kan hieronder leiden.`;
       }
 
       document.getElementById('modalIcon').textContent    = icon;
@@ -677,6 +796,9 @@
     }
 
     function closeModal()  { document.getElementById('overlay').classList.remove('open'); }
+    function openHelp()    { document.getElementById('help-overlay').classList.add('open'); }
+    function closeHelp()   { document.getElementById('help-overlay').classList.remove('open'); }
+    function closeHelpIfBg(e) { if (e.target === document.getElementById('help-overlay')) closeHelp(); }
     function closeIfBg(e)  { if (e.target === document.getElementById('overlay')) closeModal(); }
     document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
 
